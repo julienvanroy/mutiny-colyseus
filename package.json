@@ -9,7 +9,11 @@
     "loadtest": "colyseus-loadtest loadtest/example.ts --room my_room --numClients 2",
     "build": "npm run clean && tsc && node node_modules/copyfiles/copyfiles package.json ./lib && node node_modules/copyfiles/copyfiles arena.env ./lib",
     "clean": "node node_modules/rimraf/bin lib",
-    "test": "mocha --require ts-node/register test/**_test.ts --exit --timeout 15000"
+    "test": "mocha --require ts-node/register test/**_test.ts --exit --timeout 15000",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major"
   },
   "author": "",
   "license": "UNLICENSED",
@@ -29,6 +33,7 @@
     "husky": "^7.0.4",
     "mocha": "^9.0.2",
     "rimraf": "^2.7.1",
+    "standard-version": "^9.3.2",
     "ts-node": "^8.1.0",
     "ts-node-dev": "^1.0.0-pre.63",
     "typescript": "^3.4.5"
