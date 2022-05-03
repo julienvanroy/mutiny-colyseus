@@ -1,20 +1,29 @@
 import Arena from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
+import { matchMaker } from "colyseus";
 
 /**
  * Import your Room files
  */
-import { MyRoom } from "./rooms/MyRoom";
+import { PlayRoom } from "./rooms/PlayRoom";
+import { LobbyRoom } from "colyseus";
+import configs from './configs';
 
 export default Arena({
     getId: () => "Your Colyseus App",
 
-    initializeGameServer: (gameServer) => {
+    initializeGameServer: async (gameServer) => {
         /**
          * Define your room handlers:
          */
-        gameServer.define('my_room', MyRoom);
+        gameServer.define("lobby_room", LobbyRoom);
+        gameServer
+            .define('play_room', PlayRoom)
+            .enableRealtimeListing();
 
+        for (let i = 0; i < configs.rooms.starterRoomsCount; i++) {
+            matchMaker.createRoom("play_room", {})
+        }
     },
 
     initializeExpress: (app) => {
