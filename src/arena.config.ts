@@ -7,6 +7,7 @@ import { matchMaker } from "colyseus";
  */
 import { PlayRoom } from "./rooms/PlayRoom";
 import { LobbyRoom } from "colyseus";
+import configs from './configs';
 
 export default Arena({
     getId: () => "Your Colyseus App",
@@ -19,6 +20,10 @@ export default Arena({
         gameServer
             .define('play_room', PlayRoom)
             .enableRealtimeListing();
+
+        for (let i = 0; i < configs.rooms.starterRoomsCount; i++) {
+            matchMaker.createRoom("play_room", {})
+        }
     },
 
     initializeExpress: (app) => {

@@ -1,4 +1,5 @@
 import { Room, Client } from "colyseus";
+import configs from '../configs';
 import { MyRoomState } from "./schema/PlayRoomState";
 
 export class PlayRoom extends Room<MyRoomState> {
@@ -8,7 +9,7 @@ export class PlayRoom extends Room<MyRoomState> {
 
   constructor() {
     super();
-    this.maxClients = 12;
+    this.maxClients = configs.rooms.maxClientPerRoom;
     this.autoDispose = false;
   }
 
