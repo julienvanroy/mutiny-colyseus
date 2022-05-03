@@ -1,9 +1,20 @@
 import { Room, Client } from "colyseus";
-import { MyRoomState } from "./schema/MyRoomState";
+import { MyRoomState } from "./schema/PlayRoomState";
 
-export class MyRoom extends Room<MyRoomState> {
+export class PlayRoom extends Room<MyRoomState> {
+
+  maxClients: number;
+  autoDispose: boolean;
+
+  constructor() {
+    super();
+    this.maxClients = 12;
+    this.autoDispose = false;
+  }
 
   onCreate (options: any) {
+    this.autoDispose = options.autoDispose
+    
     this.setState(new MyRoomState());
 
     this.onMessage("type", (client, message) => {
@@ -20,6 +31,7 @@ export class MyRoom extends Room<MyRoomState> {
 
   onLeave (client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
+    // if (this.clients.length === 0) this.disconnect();
   }
 
   onDispose() {
