@@ -18,11 +18,27 @@ export class PlayRoom extends Room<MyRoomState> {
 
     this.setState(new MyRoomState());
 
-    this.onMessage("joystickMove", (client, message) => {
+    this.onMessage("joystick", (client, message) => {
       // console.log(client.id, message)
-      this.broadcast("joystickPos", {
+      this.broadcast("joystick", {
         playerSessionId: client.id,
         playerPosition: message
+      })
+    });
+
+    this.onMessage("kill", (client, message) => {
+      // console.log(client.id, message)
+      this.broadcast("kill", {
+        playerSessionId: client.id,
+        kill: message
+      })
+    });
+
+    this.onMessage("power", (client, message) => {
+      // console.log(client.id, message)
+      this.broadcast("power", {
+        playerSessionId: client.id,
+        power: message
       })
     });
 
