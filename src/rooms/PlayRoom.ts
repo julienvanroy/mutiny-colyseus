@@ -15,13 +15,15 @@ export class PlayRoom extends Room<MyRoomState> {
 
   onCreate (options: any) {
     this.autoDispose = options.autoDispose
-    
+
     this.setState(new MyRoomState());
 
-    this.onMessage("type", (client, message) => {
-      //
-      // handle "type" message
-      //
+    this.onMessage("joystickMove", (client, message) => {
+      // console.log(client.id, message)
+      this.broadcast("joystickPos", {
+        playerSessionId: client.id,
+        playerPosition: message
+      })
     });
 
   }
