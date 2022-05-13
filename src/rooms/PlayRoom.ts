@@ -3,7 +3,7 @@ import configs from '../configs';
 import { Player } from "./schema/Player";
 import { State } from "./schema/State";
 
-export class PlayRoom extends Room {
+export class PlayRoom extends Room<State> {
 
   maxClients: number;
   autoDispose: boolean;
@@ -30,7 +30,7 @@ export class PlayRoom extends Room {
     });
 
     this.onMessage("getPlayer", (client) => {
-      this.broadcast("getPlayer", this.state.players[client.id])
+      this.broadcast("getPlayer", this.state.players.get(client.id))
     });
 
     this.onMessage("joystick", (client, message) => {
