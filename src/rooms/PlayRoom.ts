@@ -25,8 +25,12 @@ export class PlayRoom extends Room {
       })
     });
 
-    this.onMessage("getAllPlayers", (client) => {
+    this.onMessage("getAllPlayers", () => {
       this.broadcast("getAllPlayers", this.state.players)
+    });
+
+    this.onMessage("getPlayer", (client) => {
+      this.broadcast("getPlayer", this.state.players[client.id])
     });
 
     this.onMessage("joystick", (client, message) => {
