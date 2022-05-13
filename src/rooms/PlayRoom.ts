@@ -60,6 +60,7 @@ export class PlayRoom extends Room<State> {
 
   onJoin (client: Client, options: any) {
     const player = new Player()
+    player.id = client.id
     player.name = options.name
     this.state.players.set(client.sessionId, player);
     console.log(client.sessionId, "-", player.name, "joined!");
