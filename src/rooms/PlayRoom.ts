@@ -1,8 +1,9 @@
 import { Room, Client } from "colyseus";
 import configs from '../configs';
-import { MyRoomState } from "./schema/PlayRoomState";
+import { Player } from "./schema/Player";
+import { State } from "./schema/State";
 
-export class PlayRoom extends Room<MyRoomState> {
+export class PlayRoom extends Room<State> {
 
   maxClients: number;
   autoDispose: boolean;
@@ -16,7 +17,7 @@ export class PlayRoom extends Room<MyRoomState> {
   onCreate (options: any) {
     this.autoDispose = options.autoDispose
 
-    this.setState(new MyRoomState());
+    this.setState(new State());
 
     this.onMessage("addPlayer", (client) => {
       this.broadcast("addPlayer", {
@@ -29,6 +30,14 @@ export class PlayRoom extends Room<MyRoomState> {
         playerId: message.playerId,
         playerTarget: message.playerTarget
       })
+    })
+
+    this.onMessage("getAllPlayers", () => {
+      this.broadcast("getAllPlayers", this.state.players)
+    });
+
+    this.onMessage("getPlayer", (client) => {
+      this.broadcast("getPlayer", this.state.players.get(client.id))
     });
 
     this.onMessage("joystick", (client, message) => {
@@ -57,7 +66,11 @@ export class PlayRoom extends Room<MyRoomState> {
   }
 
   onJoin (client: Client, options: any) {
-    console.log(client.sessionId, "joined!");
+    const player = new Player()
+    player.id = client.id
+    player.name = options.name
+    this.state.players.set(client.sessionId, player);
+    console.log(client.sessionId, "-", player.name, "joined!");
   }
 
   onLeave (client: Client, consented: boolean) {
