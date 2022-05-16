@@ -24,6 +24,13 @@ export class PlayRoom extends Room<MyRoomState> {
       })
     });
 
+    this.onMessage("updatePlayerTarget", (client, message) => {
+      this.broadcast("updatePlayerTarget", {
+        playerId: message.playerId,
+        playerTarget: message.playerTarget
+      })
+    });
+
     this.onMessage("joystick", (client, message) => {
       this.broadcast("joystick", {
         playerSessionId: client.id,
