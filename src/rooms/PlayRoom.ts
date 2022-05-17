@@ -44,7 +44,14 @@ export class PlayRoom extends Room<State> {
         playerId: message.playerId,
         playerTarget: message.playerTarget
       })
-    });``
+    });
+
+    this.onMessage("addPoint", (client, message) => {
+      this.broadcast("addPoint", {
+        playerId: message.playerId,
+        playerPoints: message.playerPoints
+      })
+    });
 
     this.onMessage("startGame", () => {
       this.broadcast("startGame")
