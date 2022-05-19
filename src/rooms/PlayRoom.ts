@@ -43,11 +43,6 @@ export class PlayRoom extends Room<State> {
     this.onMessage("addPoint", (client, message) => {
       const player = this.state.players.get(message.playerId);
       player.points += 1;
-
-      this.broadcast("addPoint", {
-        playerId: message.playerId,
-        playerPoints: message.playerPoints
-      })
     });
 
     this.onMessage("startGame", () => {
