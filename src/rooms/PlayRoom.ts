@@ -25,6 +25,12 @@ export class PlayRoom extends Room<State> {
       })
     });
 
+    this.onMessage("addPseudo", (client, message) => {
+      const player = this.state.players.get(message.playerId);
+      player.name = message.playerName
+      this.broadcast("getAllPlayers", this.state.players)
+    })
+
     this.onMessage("getAllPlayers", () => {
       this.broadcast("getAllPlayers", this.state.players)
     });
@@ -83,10 +89,8 @@ export class PlayRoom extends Room<State> {
     const colors = this.state.setupColor.colors
     const playerNext = this.state.setupColor.playerNext
 
-
     const player = new Player()
     player.id = client.id
-    player.name = options.name
     player.color = colors[playerNext]
     this.state.players.set(client.sessionId, player);
     console.log(client.sessionId, "-", player.name, "joined!");
