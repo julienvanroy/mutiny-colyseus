@@ -28,7 +28,17 @@ export class PlayRoom extends Room<State> {
     this.onMessage("addPseudo", (client, message) => {
       const player = this.state.players.get(message.playerId);
       player.name = message.playerName
+
+      this.broadcast("getAllPlayers", this.state.players)
     })
+
+    this.onMessage("getAllPlayers", () => {
+      this.broadcast("getAllPlayers", this.state.players)
+    });
+
+    this.onMessage("getPlayer", (client) => {
+      this.broadcast("getPlayer", this.state.players.get(client.id))
+    });
 
     this.onMessage("updatePlayerTarget", (client, message) => {
       const player = this.state.players.get(message.playerId);
@@ -104,6 +114,8 @@ export class PlayRoom extends Room<State> {
       // 20 seconds expired. let's remove the client.
       this.state.players.delete(client.sessionId);
     }
+
+    this.broadcast("getAllPlayers", this.state.players)
   }
 
   onDispose() {
