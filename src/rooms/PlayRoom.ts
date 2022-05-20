@@ -31,10 +31,8 @@ export class PlayRoom extends Room<State> {
     })
 
     this.onMessage("updatePlayerTarget", (client, message) => {
-      this.broadcast("updatePlayerTarget", {
-        playerId: message.playerId,
-        playerTarget: message.playerTarget
-      })
+      const player = this.state.players.get(message.playerId);
+      player.target = JSON.stringify(message.playerTarget);
     });
 
     this.onMessage("addPoint", (client, message) => {
