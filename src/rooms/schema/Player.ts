@@ -6,4 +6,5 @@ export class Player extends Schema {
   @type("string") color:string = "";
   @type("number") points:number = 0;
   @type("boolean") connected:boolean = true;
+  @type("string") target:string = "";
 }
