@@ -1,6 +1,4 @@
 import { Room, Client } from "colyseus";
-import { type } from "@colyseus/schema";
-
 import configs from '../configs';
 import { Player } from "./schema/Player";
 import { State } from "./schema/State";
@@ -16,10 +14,6 @@ export class PlayRoom extends Room<State> {
     this.autoDispose = false;
   }
 
-  @type("number") playerNext: number = 0;
-  colors: string[] = ["green", "red", "blue", "yellow"];
-
-
   onCreate(options: any) {
     this.autoDispose = options.autoDispose
 
@@ -31,6 +25,13 @@ export class PlayRoom extends Room<State> {
       })
     });
 
+    this.onMessage("addPseudo", (client, message) => {
+      const player = this.state.players.get(message.playerId);
+      player.name = message.playerName
+
+      this.broadcast("getAllPlayers", this.state.players)
+    })
+
     this.onMessage("getAllPlayers", () => {
       this.broadcast("getAllPlayers", this.state.players)
     });
@@ -40,20 +41,13 @@ export class PlayRoom extends Room<State> {
     });
 
     this.onMessage("updatePlayerTarget", (client, message) => {
-      this.broadcast("updatePlayerTarget", {
-        playerId: message.playerId,
-        playerTarget: message.playerTarget
-      })
+      const player = this.state.players.get(message.playerId);
+      player.target = JSON.stringify(message.playerTarget);
     });
 
     this.onMessage("addPoint", (client, message) => {
       const player = this.state.players.get(message.playerId);
       player.points += 1;
-
-      this.broadcast("addPoint", {
-        playerId: message.playerId,
-        playerPoints: message.playerPoints
-      })
     });
 
     this.onMessage("startGame", () => {
@@ -86,24 +80,45 @@ export class PlayRoom extends Room<State> {
   }
 
   onJoin(client: Client, options: any) {
+    const colors = this.state.setupColor.colors
+    const playerNext = this.state.setupColor.playerNext
+
     const player = new Player()
     player.id = client.id
-    player.name = options.name
-    player.color = this.colors[this.playerNext]
+    player.color = colors[playerNext]
     this.state.players.set(client.sessionId, player);
     console.log(client.sessionId, "-", player.name, "joined!");
 
-    if (this.playerNext === 3) this.playerNext = 0
-    else this.playerNext++
+    if (this.state.setupColor.playerNext === 3) this.state.setupColor.playerNext = 0
+    else this.state.setupColor.playerNext++
   }
 
-  onLeave(client: Client, consented: boolean) {
+  async onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
-    // if (this.clients.length === 0) this.disconnect();
+
+    // flag client as inactive for other users
+    this.state.players.get(client.sessionId).connected = false;
+
+    try {
+      if (consented) {
+        throw new Error("consented leave");
+      }
+
+      // allow disconnected client to reconnect into this room until 20 seconds
+      await this.allowReconnection(client, 20);
+
+      // client returned! let's re-activate it.
+      this.state.players.get(client.sessionId).connected = true;
+
+    } catch (e) {
+      // 20 seconds expired. let's remove the client.
+      this.state.players.delete(client.sessionId);
+    }
+
+    this.broadcast("getAllPlayers", this.state.players)
   }
 
   onDispose() {
     console.log("room", this.roomId, "disposing...");
   }
-
 }

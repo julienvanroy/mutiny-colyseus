@@ -1,6 +1,6 @@
 export default {
   rooms: {
-    maxClientPerRoom: 12,
+    maxClientPerRoom: 9,
     starterRoomsCount: 0,
   },
 };
