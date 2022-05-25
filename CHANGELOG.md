@@ -2,7 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.0.1](https://github.com/julienvanroy/naufrages-server/compare/v1.0.0...v1.0.1) (2022-05-17)
+## [1.2.0](https://github.com/julienvanroy/naufrages-server/compare/v1.1.0...v1.2.0) (2022-05-25)
+
+
+### Features
+
+* add npm run dev ([1205f27](https://github.com/julienvanroy/naufrages-server/commit/1205f27492bad6abd819910d65f765badd6a8b0a))
+* add pseudo ([b08702f](https://github.com/julienvanroy/naufrages-server/commit/b08702fd0eda118ecfaed4cda0b56dbb767d073a))
+* refacto state & add leave players and reconnection ([6976d80](https://github.com/julienvanroy/naufrages-server/commit/6976d80ee80884666655edc0df23048c972d24ea))
+* teg getPlayr, getAllPlayers ([3b4be03](https://github.com/julienvanroy/naufrages-server/commit/3b4be031b3f10f4c0257e4360d62ee8f37c45d03))
+* tej getAllPlayer, delegate playertarget to state ([48f2dae](https://github.com/julienvanroy/naufrages-server/commit/48f2dae27681c3d6fc3144bb9030122d32eea853))
+
+
+### Bug Fixes
+
+* delete broadcast addPoint, delegate listen for Points changes to colyseus room state ([95e0ac1](https://github.com/julienvanroy/naufrages-server/commit/95e0ac180429575cd21490789d2b925b99a65220))
+* maxClientPerRoom is 8 mobile and 1 desktop ([55e2b84](https://github.com/julienvanroy/naufrages-server/commit/55e2b842b4f8dd1cb4470a441a82c22b2abfac5a))
+* remettre getPlayer, getAllPlayers ([2642b66](https://github.com/julienvanroy/naufrages-server/commit/2642b668dfbad8a136a1debf72a816107fb718f3))
+
+### [1.1.0](https://github.com/julienvanroy/naufrages-server/compare/v1.0.0...v1.1.0) (2022-05-17)
 
 
 ### Features
