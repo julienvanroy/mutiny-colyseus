@@ -1,4 +1,6 @@
 import Arena from "@colyseus/arena";
+import {uWebSocketsTransport} from "@colyseus/uwebsockets-transport";
+import { WebSocketTransport } from "@colyseus/ws-transport"
 import { monitor } from "@colyseus/monitor";
 import { matchMaker } from "colyseus";
 
@@ -24,6 +26,10 @@ export default Arena({
         for (let i = 0; i < configs.rooms.starterRoomsCount; i++) {
             matchMaker.createRoom("play_room", {})
         }
+    },
+
+    initializeTransport: function() {
+        return process.env.NODE_ENV === 'production' ? new uWebSocketsTransport() : new WebSocketTransport();
     },
 
     initializeExpress: (app) => {
