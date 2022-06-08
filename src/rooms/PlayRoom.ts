@@ -19,7 +19,10 @@ export class PlayRoom extends Room<State> {
 
     this.setState(new State());
 
-    this.onMessage("addPlayer", (client) => {
+    this.onMessage("addPlayer", (client, message) => {
+      const player = this.state.players.get(client.id);
+      player.orientationReady = message.orientationReady;
+
       this.broadcast("addPlayer", {
         playerSessionId: client.id,
       })
@@ -84,6 +87,11 @@ export class PlayRoom extends Room<State> {
         playerSessionId: client.id,
         power: message
       })
+    });
+
+    this.onMessage("orientationChange", (client, message) => {
+      const player = this.state.players.get(client.id);
+      player.orientationReady = message.orientation === 'landscape';
     });
 
   }
