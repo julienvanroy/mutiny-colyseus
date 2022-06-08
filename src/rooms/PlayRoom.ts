@@ -2,7 +2,8 @@ import { Room, Client } from "colyseus";
 import configs from '../configs';
 import { Player } from "./schema/Player";
 import { State } from "./schema/State";
-
+import colors from "../configs/colors";
+import diffArray from '../configs/diffArray';
 export class PlayRoom extends Room<State> {
 
   maxClients: number;
@@ -97,16 +98,21 @@ export class PlayRoom extends Room<State> {
   }
 
   onJoin(client: Client, options: any) {
-    const colors = this.state.setupColor.colors
+    const colorsAvailable = this.state.setupColor.colorsAvailable
     const playerNext = this.state.setupColor.playerNext
 
     const player = new Player()
     player.id = client.id
-    player.color = colors[playerNext]
+    player.color = colorsAvailable[playerNext]
+
+    this.state.setupColor.colorsAvailable = colorsAvailable.filter(c => c.id !== player.color.id);
+    this.state.setupColor.colorsTaken = diffArray(colors, this.state.setupColor.colorsAvailable)
+
     this.state.players.set(client.sessionId, player);
+
     console.log(client.sessionId, "-", player.name, "joined!");
 
-    if (this.state.setupColor.playerNext === 3) this.state.setupColor.playerNext = 0
+    if (this.state.setupColor.playerNext === 7) this.state.setupColor.playerNext = 0
     else this.state.setupColor.playerNext++
   }
 
@@ -129,7 +135,12 @@ export class PlayRoom extends Room<State> {
 
     } catch (e) {
       // 20 seconds expired. let's remove the client.
+      const player = this.state.players.get(client.sessionId);
+      this.state.setupColor.colorsAvailable.push(player.color);
+      this.state.setupColor.colorsTaken = this.state.setupColor.colorsTaken.filter(c => c.id !== player.color.id)
+
       this.state.players.delete(client.sessionId);
+      
     }
 
     this.broadcast("getAllPlayers", this.state.players)

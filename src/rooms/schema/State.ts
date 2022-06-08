@@ -1,9 +1,10 @@
 import { Schema, MapSchema, type } from "@colyseus/schema";
+import { Color } from './Color';
 import { Player } from "./Player";
-import {SetupColor} from "./SetupColor";
+import {SetupColors} from "./SetupColors";
 
 export class State extends Schema {
 
   @type({ map: Player }) players = new MapSchema<Player>();
-  @type(SetupColor) setupColor = new SetupColor()
+  @type(SetupColors) setupColor = new SetupColors()
 }
