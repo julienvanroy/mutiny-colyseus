@@ -2,7 +2,6 @@ import { Room, Client } from "colyseus";
 import configs from '../configs';
 import { Player } from "./schema/Player";
 import { State } from "./schema/State";
-
 export class PlayRoom extends Room<State> {
 
   maxClients: number;
@@ -97,17 +96,19 @@ export class PlayRoom extends Room<State> {
   }
 
   onJoin(client: Client, options: any) {
-    const colors = this.state.setupColor.colors
-    const playerNext = this.state.setupColor.playerNext
+    const availableColors = this.state.availableColors
+
+    if(availableColors.length === 0) return;
 
     const player = new Player()
     player.id = client.id
-    player.color = colors[playerNext]
-    this.state.players.set(client.sessionId, player);
-    console.log(client.sessionId, "-", player.name, "joined!");
+    player.color = availableColors[0]
 
-    if (this.state.setupColor.playerNext === 3) this.state.setupColor.playerNext = 0
-    else this.state.setupColor.playerNext++
+    availableColors.shift();
+
+    this.state.players.set(client.sessionId, player);
+
+    console.log(client.sessionId, "-", player.name, "joined!");
   }
 
   async onLeave(client: Client, consented: boolean) {
@@ -129,6 +130,9 @@ export class PlayRoom extends Room<State> {
 
     } catch (e) {
       // 20 seconds expired. let's remove the client.
+      const player = this.state.players.get(client.sessionId);
+      this.state.availableColors.push(player.color);
+
       this.state.players.delete(client.sessionId);
     }
 
