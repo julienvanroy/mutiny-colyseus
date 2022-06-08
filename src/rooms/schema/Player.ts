@@ -6,5 +6,6 @@ export class Player extends Schema {
   @type("string") color:string = "";
   @type("number") points:number = 0;
   @type("boolean") connected:boolean = true;
+  @type("boolean") orientationReady:boolean = false;
   @type("string") target:string = "";
 }
