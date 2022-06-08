@@ -43,6 +43,11 @@ export class PlayRoom extends Room<State> {
     this.onMessage("updatePlayerTarget", (client, message) => {
       const player = this.state.players.get(message.playerId);
       player.target = JSON.stringify(message.playerTarget);
+
+      this.broadcast("updatePlayerTarget", {
+        player: message.playerId,
+        target: message.playerTarget.id
+      })
     });
 
     this.onMessage("addPoint", (client, message) => {
@@ -61,16 +66,20 @@ export class PlayRoom extends Room<State> {
       })
     });
 
-    this.onMessage("kill", (client, message) => {
-      // console.log(client.id, message)
-      this.broadcast("kill", {
+    this.onMessage("attack", (client) => {
+      this.broadcast("attack", {
         playerSessionId: client.id,
-        kill: message
+      })
+    });
+
+    this.onMessage("kill", (client, message) => {
+      this.broadcast("kill", {
+        player: message.player,
+        target: message.target
       })
     });
 
     this.onMessage("power", (client, message) => {
-      // console.log(client.id, message)
       this.broadcast("power", {
         playerSessionId: client.id,
         power: message
