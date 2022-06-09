@@ -44,19 +44,20 @@ export class PlayRoom extends Room<State> {
       const player = this.state.players.get(message.playerId);
       player.target = JSON.stringify(message.playerTarget);
 
-      // TODO
-      // player.targetChanged = true;
-      // this.broadcast("getAllPlayers", this.state.players)
-      // let timeout = this.clock.setTimeout(() => {
-      //   player.targetChanged = false;
-      //   this.broadcast("getAllPlayers", this.state.players)
-      //   timeout.clear();
-      // }, 2000);
+      if (!message.onGameStart) {
+        player.targetChanged = true;
+        this.broadcast("getAllPlayers", this.state.players)
+        let timeout = this.clock.setTimeout(() => {
+          player.targetChanged = false;
+          this.broadcast("getAllPlayers", this.state.players)
+          timeout.clear();
+        }, 2000);
+      }
 
-      this.broadcast("updatePlayerTarget", {
-        player: message.playerId,
-        target: message.playerTarget.id
-      })
+      // this.broadcast("updatePlayerTarget", {
+      //   player: message.playerId,
+      //   target: message.playerTarget.id
+      // })
     });
 
     this.onMessage("addPoint", (client, message) => {
