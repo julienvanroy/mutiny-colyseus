@@ -44,6 +44,15 @@ export class PlayRoom extends Room<State> {
       const player = this.state.players.get(message.playerId);
       player.target = JSON.stringify(message.playerTarget);
 
+      // TODO
+      // player.targetChanged = true;
+      // this.broadcast("getAllPlayers", this.state.players)
+      // let timeout = this.clock.setTimeout(() => {
+      //   player.targetChanged = false;
+      //   this.broadcast("getAllPlayers", this.state.players)
+      //   timeout.clear();
+      // }, 2000);
+
       this.broadcast("updatePlayerTarget", {
         player: message.playerId,
         target: message.playerTarget.id
@@ -73,10 +82,20 @@ export class PlayRoom extends Room<State> {
     });
 
     this.onMessage("kill", (client, message) => {
-      this.broadcast("kill", {
-        player: message.player,
-        target: message.target
-      })
+      const player = this.state.players.get(message.target);
+      player.isKilled = true;
+      this.broadcast("getAllPlayers", this.state.players)
+
+      let timeout = this.clock.setTimeout(() => {
+        player.isKilled = false;
+        this.broadcast("getAllPlayers", this.state.players)
+        timeout.clear();
+      }, 2000);
+
+      // this.broadcast("kill", {
+      //   player: message.player,
+      //   target: message.target
+      // })
     });
 
     this.onMessage("power", (client, message) => {
@@ -96,7 +115,7 @@ export class PlayRoom extends Room<State> {
   onJoin(client: Client, options: any) {
     const availableColors = this.state.availableColors
 
-    if(availableColors.length === 0) return;
+    if (availableColors.length === 0) return;
 
     const player = new Player()
     player.id = client.id

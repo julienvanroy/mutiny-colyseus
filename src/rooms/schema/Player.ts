@@ -9,4 +9,6 @@ export class Player extends Schema {
   @type("boolean") connected:boolean = true;
   @type("boolean") orientationReady:boolean = false;
   @type("string") target:string = "";
+  @type("boolean") isKilled:boolean = false;
+  @type("boolean") targetChanged:boolean = false;
 }
