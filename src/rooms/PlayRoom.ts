@@ -10,12 +10,10 @@ export class PlayRoom extends Room<State> {
   constructor() {
     super();
     this.maxClients = configs.rooms.maxClientPerRoom;
-    this.autoDispose = false;
+    this.autoDispose = true;
   }
 
   onCreate(options: any) {
-    this.autoDispose = options.autoDispose
-
     this.setState(new State());
 
     this.onMessage("addPlayer", (client, message) => {
