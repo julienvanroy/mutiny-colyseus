@@ -18,6 +18,10 @@ export class PlayRoom extends Room<State> {
 
     this.setState(new State());
 
+    this.onMessage("ejectPlayer", (client, message) => {
+      this.broadcast("leaveRoom", message)
+    })
+
     this.onMessage("addPlayer", (client, message) => {
       const player = this.state.players.get(client.id);
       player.orientationReady = message.orientationReady;
