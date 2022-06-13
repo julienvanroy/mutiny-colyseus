@@ -6,4 +6,5 @@ import colors from "../../configs/colors";
 export class State extends Schema {
   @type({ map: Player }) players = new MapSchema<Player>();
   @type({ array: Color }) availableColors = colors;
+  @type("boolean") isStartGame = false;
 }
