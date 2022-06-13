@@ -62,6 +62,7 @@ export class PlayRoom extends Room<State> {
     });
 
     this.onMessage("startGame", () => {
+      this.state.isStartGame = true
       this.broadcast("startGame")
     });
 
@@ -118,27 +119,33 @@ export class PlayRoom extends Room<State> {
   async onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
 
-    // flag client as inactive for other users
-    this.state.players.get(client.sessionId).connected = false;
-
-    try {
-      if (consented) {
-        throw new Error("consented leave");
-      }
-
-      // allow disconnected client to reconnect into this room until 20 seconds
-      await this.allowReconnection(client, 20);
-
-      // client returned! let's re-activate it.
-      this.state.players.get(client.sessionId).connected = true;
-
-    } catch (e) {
-      // 20 seconds expired. let's remove the client.
+    const leave = () => {
       const player = this.state.players.get(client.sessionId);
       this.state.availableColors.push(player.color);
 
       this.state.players.delete(client.sessionId);
     }
+
+    if(this.state.isStartGame) {
+      // flag client as inactive for other users
+      this.state.players.get(client.sessionId).connected = false;
+
+      try {
+        if (consented) {
+          throw new Error("consented leave");
+        }
+
+        // allow disconnected client to reconnect into this room until 20 seconds
+        await this.allowReconnection(client, 20);
+
+        // client returned! let's re-activate it.
+        this.state.players.get(client.sessionId).connected = true;
+
+      } catch (e) {
+        // 20 seconds expired. let's remove the client.
+        leave()
+      }
+    } else leave()
 
     this.broadcast("getAllPlayers", this.state.players)
   }
