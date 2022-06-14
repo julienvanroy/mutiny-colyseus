@@ -66,6 +66,11 @@ export class PlayRoom extends Room<State> {
       this.broadcast("startGame")
     });
 
+    this.onMessage("endGame", () => {
+      this.state.isEndGame = true
+      this.broadcast("endGame")
+    });
+
     this.onMessage("joystick", (client, message) => {
       this.broadcast("joystick", {
         playerSessionId: client.id,
