@@ -58,12 +58,19 @@ export class PlayRoom extends Room<State> {
           this.broadcast("getAllPlayers", this.state.players)
           timeout.clear();
         }, 2000);
-      }
 
-      // this.broadcast("updatePlayerTarget", {
-      //   player: message.playerId,
-      //   target: message.playerTarget.id
-      // })
+        if (message.targetGotStolen) {
+          player.targetGotStolen = true;
+          let timeout2 = this.clock.setTimeout(() => {
+            player.targetGotStolen = false;
+            timeout2.clear();
+          }, 2000);
+        }
+      }  
+
+      this.broadcast("updatePlayerTarget", {
+        target: this.state.players.get(message.playerTarget.id).name,
+      })
     });
 
     this.onMessage("addPoint", (client, message) => {
@@ -105,10 +112,9 @@ export class PlayRoom extends Room<State> {
         timeout.clear();
       }, 2000);
 
-      // this.broadcast("kill", {
-      //   player: message.player,
-      //   target: message.target
-      // })
+      this.broadcast("kill", {
+        target: player.name
+      })
     });
 
     this.onMessage("power", (client, message) => {

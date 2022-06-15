@@ -11,4 +11,5 @@ export class Player extends Schema {
   @type("string") target:string = "";
   @type("boolean") isKilled:boolean = false;
   @type("boolean") targetChanged:boolean = false;
+  @type("boolean") targetGotStolen:boolean = false;
 }
