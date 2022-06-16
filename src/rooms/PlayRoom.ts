@@ -32,13 +32,16 @@ export class PlayRoom extends Room<State> {
     });
 
     this.onMessage("addPseudo", (client, message) => {
-      const player = this.state.players.get(message.playerId);
+      const player = new Player()
+      player.id = client.id
       player.name = message.playerName
 
       const availableColors = this.state.availableColors
       if (availableColors.length === 0) return;
       player.color = availableColors[0]
       availableColors.shift();
+
+      this.state.players.set(client.sessionId, player);
 
       this.broadcast("getAllPlayers", this.state.players)
     })
@@ -137,27 +140,16 @@ export class PlayRoom extends Room<State> {
   }
 
   onJoin(client: Client, options: any) {
-    const player = new Player()
-    player.id = client.id
-
-    this.state.players.set(client.sessionId, player);
-
-    console.log(client.sessionId, "-", player.name, "joined!");
+    console.log(client.sessionId, "joined!");
   }
 
   async onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
 
-    const leave = () => {
-      const player = this.state.players.get(client.sessionId);
-      this.state.availableColors.push(player.color);
-
-      this.state.players.delete(client.sessionId);
-    }
-
     if(this.state.isStartGame) {
       // flag client as inactive for other users
       this.state.players.get(client.sessionId).connected = false;
+      this.broadcast("getAllPlayers", this.state.players)
 
       try {
         if (consented) {
@@ -172,9 +164,9 @@ export class PlayRoom extends Room<State> {
 
       } catch (e) {
         // 20 seconds expired. let's remove the client.
-        leave()
+        this.state.leave(client.sessionId)
       }
-    } else leave()
+    } else this.state.leave(client.sessionId)
 
     this.broadcast("getAllPlayers", this.state.players)
   }
