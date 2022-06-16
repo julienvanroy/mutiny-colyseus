@@ -8,4 +8,11 @@ export class State extends Schema {
   @type({ array: Color }) availableColors = colors;
   @type("boolean") isStartGame = false;
   @type("boolean") isEndGame = false;
+
+  leave(sessionId: string) {
+    const player = this.players.get(sessionId);
+    this.availableColors.push(player.color);
+
+    this.players.delete(sessionId);
+  }
 }
