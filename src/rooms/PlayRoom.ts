@@ -35,6 +35,11 @@ export class PlayRoom extends Room<State> {
       const player = this.state.players.get(message.playerId);
       player.name = message.playerName
 
+      const availableColors = this.state.availableColors
+      if (availableColors.length === 0) return;
+      player.color = availableColors[0]
+      availableColors.shift();
+
       this.broadcast("getAllPlayers", this.state.players)
     })
 
@@ -66,7 +71,7 @@ export class PlayRoom extends Room<State> {
             timeout2.clear();
           }, 2000);
         }
-      }  
+      }
 
       this.broadcast("updatePlayerTarget", {
         target: this.state.players.get(message.playerTarget.id).name,
@@ -132,15 +137,8 @@ export class PlayRoom extends Room<State> {
   }
 
   onJoin(client: Client, options: any) {
-    const availableColors = this.state.availableColors
-
-    if (availableColors.length === 0) return;
-
     const player = new Player()
     player.id = client.id
-    player.color = availableColors[0]
-
-    availableColors.shift();
 
     this.state.players.set(client.sessionId, player);
 
