@@ -11,8 +11,9 @@ export class State extends Schema {
 
   leave(sessionId: string) {
     const player = this.players.get(sessionId);
-    this.availableColors.push(player.color);
-
-    this.players.delete(sessionId);
+    if(player) {
+      if(player.color) this.availableColors.push(player.color);
+      this.players.delete(sessionId);
+    }
   }
 }
