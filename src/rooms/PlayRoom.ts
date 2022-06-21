@@ -146,10 +146,10 @@ export class PlayRoom extends Room<State> {
 
   async onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
+    const player = this.state.players.get(client.id);
 
-    if(this.state.isStartGame) {
+    if(this.state.isStartGame && player) {
       // flag client as inactive for other users
-      const player = this.state.players.get(client.id);
       player.connected = false;
       this.broadcast("getAllPlayers", this.state.players)
 
