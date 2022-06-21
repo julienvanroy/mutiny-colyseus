@@ -76,9 +76,13 @@ export class PlayRoom extends Room<State> {
         }
       }
 
-      this.broadcast("updatePlayerTarget", {
-        target: this.state.players.get(message.playerTarget.id).name,
-      })
+      const target = this.state.players.get(message.playerTarget.id)
+
+      if ( target ) {
+        this.broadcast("updatePlayerTarget", {
+          target: target.name,
+        })
+      }
     });
 
     this.onMessage("addPoint", (client, message) => {
@@ -134,7 +138,7 @@ export class PlayRoom extends Room<State> {
 
     this.onMessage("orientationChange", (client, message) => {
       const player = this.state.players.get(client.id);
-      player.orientationReady = message.orientationReady;
+      if(player) player.orientationReady = message.orientationReady;
     });
 
   }
