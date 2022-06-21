@@ -131,7 +131,10 @@ export class PlayRoom extends Room<State> {
 
     this.onMessage("orientationChange", (client, message) => {
       const player = this.state.players.get(client.id);
-      if(player) player.orientationReady = message.orientationReady;
+      if(player) {
+        player.orientationReady = message.orientationReady;
+        this.broadcast("getAllPlayers", this.state.players)
+      }
     });
 
   }
