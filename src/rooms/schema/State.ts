@@ -9,11 +9,11 @@ export class State extends Schema {
   @type("boolean") isStartGame = false;
   @type("boolean") isEndGame = false;
 
-  leave(sessionId: string) {
-    const player = this.players.get(sessionId);
+  leave(id: string) {
+    const player = this.players.get(id);
     if(player) {
       if(player.color) this.availableColors.push(player.color);
-      this.players.delete(sessionId);
+      this.players.delete(id);
     }
   }
 }

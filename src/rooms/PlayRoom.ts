@@ -148,7 +148,8 @@ export class PlayRoom extends Room<State> {
 
     if(this.state.isStartGame) {
       // flag client as inactive for other users
-      this.state.players.get(client.sessionId).connected = false;
+      const player = this.state.players.get(client.id);
+      player.connected = false;
       this.broadcast("getAllPlayers", this.state.players)
 
       try {
@@ -160,13 +161,13 @@ export class PlayRoom extends Room<State> {
         await this.allowReconnection(client, 20);
 
         // client returned! let's re-activate it.
-        this.state.players.get(client.sessionId).connected = true;
+        player.connected = true;
 
       } catch (e) {
         // 20 seconds expired. let's remove the client.
-        this.state.leave(client.sessionId)
+        this.state.leave(client.id)
       }
-    } else this.state.leave(client.sessionId)
+    } else this.state.leave(client.id)
 
     this.broadcast("getAllPlayers", this.state.players)
   }
