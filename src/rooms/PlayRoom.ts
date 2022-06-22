@@ -49,7 +49,7 @@ export class PlayRoom extends Room<State> {
 
     this.onMessage("updatePlayerTarget", (client, message) => {
       const player = this.state.players.get(message.playerId);
-      if(player) return;
+      if (!player) return;
       player.target = JSON.stringify(message.playerTarget);
 
       if (!message.onGameStart) {
@@ -77,6 +77,7 @@ export class PlayRoom extends Room<State> {
           target: target.name,
         })
       }
+      this.broadcast("getAllPlayers", this.state.players)
     });
 
     this.onMessage("addPoint", (client, message) => {
