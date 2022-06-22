@@ -110,6 +110,7 @@ export class PlayRoom extends Room<State> {
 
     this.onMessage("kill", (client, message) => {
       const player = this.state.players.get(message.target);
+      if (!player) return;
       player.isKilled = true;
       this.broadcast("getAllPlayers", this.state.players)
 
@@ -119,8 +120,10 @@ export class PlayRoom extends Room<State> {
         timeout.clear();
       }, 2000);
 
+      const playerKiller = this.state.players.get(message.player);
+      if (!playerKiller) return;
       this.broadcast("kill", {
-        target: player.name
+        target: playerKiller.name
       })
     });
 
