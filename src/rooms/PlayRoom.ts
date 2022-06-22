@@ -61,7 +61,7 @@ export class PlayRoom extends Room<State> {
           timeout.clear();
         }, 2000);
 
-        if (message.targetGotStolen) {
+        if (message.playerStealer) {
           player.targetGotStolen = true;
           let timeout2 = this.clock.setTimeout(() => {
             player.targetGotStolen = false;
@@ -70,8 +70,8 @@ export class PlayRoom extends Room<State> {
         }
       }
 
-      if (message.targetGotStolen) {
-        const playerStealer = this.state.players.get(message.targetGotStolen);
+      if (message.playerStealer) {
+        const playerStealer = this.state.players.get(message.playerStealer);
 
         if (playerStealer) {
           this.broadcast("updatePlayerTarget", {
