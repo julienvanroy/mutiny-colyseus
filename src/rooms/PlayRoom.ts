@@ -61,7 +61,7 @@ export class PlayRoom extends Room<State> {
           timeout.clear();
         }, 2000);
 
-        if (message.targetGotStolen) {
+        if (message.playerStealer) {
           player.targetGotStolen = true;
           let timeout2 = this.clock.setTimeout(() => {
             player.targetGotStolen = false;
@@ -70,13 +70,17 @@ export class PlayRoom extends Room<State> {
         }
       }
 
-      const target = this.state.players.get(message.playerTarget.id)
+      if (message.playerStealer) {
+        const playerStealer = this.state.players.get(message.playerStealer);
 
-      if ( target ) {
-        this.broadcast("updatePlayerTarget", {
-          target: target.name,
-        })
+        if (playerStealer) {
+          this.broadcast("updatePlayerTarget", {
+            stealer: playerStealer.name,
+          })
+        }
       }
+      
+
       this.broadcast("getAllPlayers", this.state.players)
     });
 
@@ -123,7 +127,7 @@ export class PlayRoom extends Room<State> {
       const playerKiller = this.state.players.get(message.player);
       if (!playerKiller) return;
       this.broadcast("kill", {
-        target: playerKiller.name
+        killer: playerKiller.name
       })
     });
 
