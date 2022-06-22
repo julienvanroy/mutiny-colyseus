@@ -75,7 +75,7 @@ export class PlayRoom extends Room<State> {
 
         if (playerStealer) {
           this.broadcast("updatePlayerTarget", {
-            target: playerStealer.name,
+            stealer: playerStealer.name,
           })
         }
       }
@@ -127,7 +127,7 @@ export class PlayRoom extends Room<State> {
       const playerKiller = this.state.players.get(message.player);
       if (!playerKiller) return;
       this.broadcast("kill", {
-        target: playerKiller.name
+        killer: playerKiller.name
       })
     });
 
