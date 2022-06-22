@@ -70,13 +70,17 @@ export class PlayRoom extends Room<State> {
         }
       }
 
-      const target = this.state.players.get(message.playerTarget.id)
+      if (message.targetGotStolen) {
+        const playerStealer = this.state.players.get(message.targetGotStolen);
 
-      if ( target ) {
-        this.broadcast("updatePlayerTarget", {
-          target: target.name,
-        })
+        if (playerStealer) {
+          this.broadcast("updatePlayerTarget", {
+            target: playerStealer.name,
+          })
+        }
       }
+      
+
       this.broadcast("getAllPlayers", this.state.players)
     });
 
